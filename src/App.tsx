@@ -12,11 +12,11 @@ type SectionLink = {
 }
 
 const sectionLinks: SectionLink[] = [
-  { id: 'overview', label: 'Overview', short: 'OV', file: 'src/portfolio.tsx', tab: 'portfolio.tsx' },
-  { id: 'projects', label: 'Projects', short: 'PR', file: 'src/projects.section.ts', tab: 'selected-work.md' },
-  { id: 'experience', label: 'Experience', short: 'XP', file: 'src/experience.section.ts', tab: 'experience.log' },
-  { id: 'education', label: 'Education', short: 'ED', file: 'src/education.section.ts', tab: 'education.md' },
-  { id: 'contact', label: 'Contact', short: 'CT', file: 'src/contact.section.ts', tab: 'contact.ts' },
+  { id: 'overview', label: 'Overview', short: 'OV', file: 'portfolio.tsx', tab: 'portfolio.tsx' },
+  { id: 'projects', label: 'Projects', short: 'PR', file: 'projects.tsx', tab: 'projects.tsx' },
+  { id: 'experience', label: 'Experience', short: 'XP', file: 'experience.tsx', tab: 'experience.tsx' },
+  { id: 'education', label: 'Education', short: 'ED', file: 'education.tsx', tab: 'education.tsx' },
+  { id: 'contact', label: 'Contact', short: 'CT', file: 'contact.tsx', tab: 'contact.tsx' },
 ]
 
 const experienceItems = [
@@ -107,7 +107,6 @@ function App() {
           <span className="dot amber"></span>
           <span className="dot green"></span>
         </div>
-        <div className="topbar-title">ziqing-wang.portfolio.tsx</div>
         <div className="topbar-meta">
           <span className="topbar-pill">portfolio mode</span>
           <span className="topbar-pill">dark workspace</span>
@@ -117,18 +116,6 @@ function App() {
       <div className="workspace">
         <aside className="rail" aria-label="Workspace shortcuts">
           <div className="rail-badge">ZW</div>
-          {sectionLinks.map((link) => (
-            <button
-              key={link.id}
-              type="button"
-              className={link.id === activeSection ? 'rail-link is-active' : 'rail-link'}
-              onClick={() => setActiveSection(link.id)}
-              aria-label={link.label}
-              aria-pressed={link.id === activeSection}
-            >
-              {link.short}
-            </button>
-          ))}
         </aside>
 
         <aside className="explorer" aria-label="Section explorer">
@@ -171,26 +158,6 @@ function App() {
           </div>
 
           <main id="main-content" ref={paneRef} className="editor-pane">
-            <header className="site-header">
-              <div className="site-mark">
-                <span className="site-mark__mono">ZW</span>
-                <span className="site-mark__text">Ziqing Wang</span>
-              </div>
-
-              <nav className="section-nav" aria-label="Primary">
-                {sectionLinks.map((link) => (
-                  <button
-                    key={link.id}
-                    type="button"
-                    className={link.id === activeSection ? 'section-nav-link is-active' : 'section-nav-link'}
-                    onClick={() => setActiveSection(link.id)}
-                  >
-                    {link.label}
-                  </button>
-                ))}
-              </nav>
-            </header>
-
             {activeSection === 'overview' && <OverviewSection />}
             {activeSection === 'projects' && <ProjectsSection />}
             {activeSection === 'experience' && <ExperienceSection />}
@@ -201,8 +168,8 @@ function App() {
       </div>
 
       <footer className="statusbar">
-        <span>active file: {activeLink.file}</span>
-        <span>active pane: {activeLink.label}</span>
+        <span>active file: {activeLink.tab}</span>
+        <span>active section: {activeLink.label}</span>
       </footer>
     </div>
   )
