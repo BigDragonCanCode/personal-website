@@ -1,5 +1,6 @@
 export type SectionId =
   | 'overview'
+  | 'skills'
   | 'projects'
   | 'experience'
   | 'education'

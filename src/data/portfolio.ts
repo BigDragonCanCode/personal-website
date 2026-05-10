@@ -7,6 +7,7 @@ import type {
 
 export const sectionLinks: SectionLink[] = [
   { id: 'overview', label: 'Overview', short: 'OV', file: 'portfolio.tsx', tab: 'portfolio.tsx' },
+  { id: 'skills', label: 'Skills', short: 'SK', file: 'skills.tsx', tab: 'skills.tsx' },
   { id: 'projects', label: 'Projects', short: 'PR', file: 'projects.tsx', tab: 'projects.tsx' },
   { id: 'experience', label: 'Experience', short: 'XP', file: 'experience.tsx', tab: 'experience.tsx' },
   { id: 'education', label: 'Education', short: 'ED', file: 'education.tsx', tab: 'education.tsx' },

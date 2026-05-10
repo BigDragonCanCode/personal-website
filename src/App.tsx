@@ -6,6 +6,7 @@ import { EducationSection } from './components/sections/EducationSection'
 import { ExperienceSection } from './components/sections/ExperienceSection'
 import { OverviewSection } from './components/sections/OverviewSection'
 import { ProjectsSection } from './components/sections/ProjectsSection'
+import { SkillsSection } from './components/sections/SkillsSection'
 import type { SectionId } from './types/sections'
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
 
           <main id="main-content" ref={paneRef} className="editor-pane">
             {activeSection === 'overview' && <OverviewSection />}
+            {activeSection === 'skills' && <SkillsSection />}
             {activeSection === 'projects' && <ProjectsSection />}
             {activeSection === 'experience' && <ExperienceSection />}
             {activeSection === 'education' && <EducationSection />}
