@@ -1,3 +1,4 @@
+import './EducationSection.css'
 export function EducationSection() {
   return (
     <section

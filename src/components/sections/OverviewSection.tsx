@@ -1,6 +1,7 @@
 import { FaGithub, FaLinkedinIn } from 'react-icons/fa'
 import { HiOutlineMail } from 'react-icons/hi'
-import { contactActions, strengths } from '../data/portfolio'
+import { contactActions, strengths } from '../../data/portfolio'
+import './OverviewSection.css'
 
 function getActionIcon(actionId: 'email' | 'linkedin' | 'github') {
   switch (actionId) {

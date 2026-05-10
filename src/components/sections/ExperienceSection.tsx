@@ -1,4 +1,5 @@
-import { experienceItems } from '../data/portfolio'
+import { experienceItems } from '../../data/portfolio'
+import './ExperienceSection.css'
 
 export function ExperienceSection() {
   return (

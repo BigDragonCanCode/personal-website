@@ -1,5 +1,6 @@
 import { sectionLinks } from '../data/portfolio'
 import type { SectionId } from '../types/sections'
+import './Explorer.css'
 
 type ExplorerProps = {
   activeSection: SectionId

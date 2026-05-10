@@ -1,4 +1,5 @@
-import { projects } from '../data/portfolio'
+import { projects } from '../../data/portfolio'
+import './ProjectsSection.css'
 
 export function ProjectsSection() {
   return (
