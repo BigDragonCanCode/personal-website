@@ -7,14 +7,7 @@ export function ExperienceSection() {
       <div className="section-heading section-heading--split">
         <div>
           <p className="section-kicker">Experience</p>
-          <h2 id="experience-title">
-            Recent roles and what changed because of them.
-          </h2>
         </div>
-        <p className="section-note">
-          I like work where product clarity and implementation quality reinforce
-          each other.
-        </p>
       </div>
 
       <div className="timeline">

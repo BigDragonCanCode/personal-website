@@ -95,13 +95,10 @@ export function SkillsSection({
       <div className="section-heading section-heading--split skills-section__heading">
         <div>
           <p className="section-kicker">Technical Skills</p>
-          <h2 id={`${sectionId}-title`}>Resume-derived stack, with readable and decorative views.</h2>
+          {/* <h2 id={`${sectionId}-title`}>Resume-derived stack, with readable and decorative views.</h2> */}
         </div>
 
         <div className="skills-section__controls">
-          <p className="section-note skills-section__note">
-            Wall mode stays scan-first. Globe mode stays decorative and spatial.
-          </p>
 
           <div className="skills-section__toggle" role="tablist" aria-label="Skills view">
             {(['wall', 'globe'] as const).map((mode) => (

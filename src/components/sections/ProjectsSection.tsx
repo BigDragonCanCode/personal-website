@@ -7,12 +7,8 @@ export function ProjectsSection() {
       <div className="section-heading section-heading--split">
         <div>
           <p className="section-kicker">Selected work</p>
-          <h2 id="projects-title">Case-study style project rows.</h2>
+          {/* <h2 id="projects-title">Case-study style project rows.</h2> */}
         </div>
-        <p className="section-note">
-          A few representative builds with enough detail to show scope and
-          engineering shape.
-        </p>
       </div>
 
       <div className="project-list">

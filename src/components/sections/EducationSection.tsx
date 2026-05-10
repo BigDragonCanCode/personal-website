@@ -8,7 +8,6 @@ export function EducationSection() {
       <div className="section-heading section-heading--split">
         <div>
           <p className="section-kicker">Education</p>
-          <h2 id="education-title">Formal training with a practical bend.</h2>
         </div>
       </div>
 

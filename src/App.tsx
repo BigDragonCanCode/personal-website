@@ -10,10 +10,48 @@ import { SkillsSection } from './components/sections/SkillsSection'
 import type { SectionId } from './types/sections'
 
 function App() {
-  const [activeSection, setActiveSection] = useState<SectionId>('overview')
+  const [activeSection, setActiveSection] = useState<SectionId | null>('overview')
+  const [explorerSection, setExplorerSection] = useState<SectionId>('overview')
+  const [openTabs, setOpenTabs] = useState<SectionId[]>(['overview'])
   const paneRef = useRef<HTMLElement | null>(null)
 
-  const activeLink = sectionLinks.find((link) => link.id === activeSection) ?? sectionLinks[0]
+  const activeLink =
+    sectionLinks.find((link) => link.id === activeSection) ??
+    sectionLinks.find((link) => link.id === explorerSection) ??
+    sectionLinks[0]
+
+  const activateSection = (section: SectionId) => {
+    setExplorerSection(section)
+    setOpenTabs((currentTabs) => (
+      currentTabs.includes(section) ? currentTabs : [...currentTabs, section]
+    ))
+    setActiveSection(section)
+  }
+
+  const closeTab = (section: SectionId) => {
+    setOpenTabs((currentTabs) => {
+      const closingIndex = currentTabs.indexOf(section)
+
+      if (closingIndex === -1) {
+        return currentTabs
+      }
+
+      const remainingTabs = currentTabs.filter((tab) => tab !== section)
+
+      if (activeSection === section) {
+        const nextActive =
+          remainingTabs[closingIndex] ?? remainingTabs[closingIndex - 1] ?? null
+
+        setActiveSection(nextActive)
+
+        if (nextActive) {
+          setExplorerSection(nextActive)
+        }
+      }
+
+      return remainingTabs
+    })
+  }
 
   useEffect(() => {
     paneRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
@@ -39,22 +77,51 @@ function App() {
           <div className="rail-badge">ZW</div>
         </aside>
 
-        <Explorer activeSection={activeSection} onSelectSection={setActiveSection} />
+        <Explorer activeSection={explorerSection} onSelectSection={activateSection} />
 
         <div className="editor">
           <div className="tabs" role="tablist" aria-label="Open files">
-            {sectionLinks.map((link) => (
-              <button
-                key={link.id}
-                type="button"
-                role="tab"
-                aria-selected={link.id === activeSection}
-                className={link.id === activeSection ? 'tab tab-active' : 'tab'}
-                onClick={() => setActiveSection(link.id)}
-              >
-                {link.tab}
-              </button>
-            ))}
+            {openTabs.length > 0 ? (
+              openTabs.map((tabId) => {
+                const link = sectionLinks.find((sectionLink) => sectionLink.id === tabId)
+
+                if (!link) {
+                  return null
+                }
+
+                return (
+                  <div
+                    key={link.id}
+                    className={link.id === activeSection ? 'tab-shell tab-shell-active' : 'tab-shell'}
+                  >
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={link.id === activeSection}
+                      className={link.id === activeSection ? 'tab tab-active' : 'tab'}
+                      onClick={() => activateSection(link.id)}
+                    >
+                      {link.tab}
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={`Close ${link.tab}`}
+                      className="tab-close"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        closeTab(link.id)
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )
+              })
+            ) : (
+              <div className="tabs-empty" aria-live="polite">
+                No open files
+              </div>
+            )}
           </div>
 
           <main id="main-content" ref={paneRef} className="editor-pane">
@@ -63,13 +130,22 @@ function App() {
             {activeSection === 'projects' && <ProjectsSection />}
             {activeSection === 'experience' && <ExperienceSection />}
             {activeSection === 'education' && <EducationSection />}
+            {!activeSection && (
+              <section className="editor-empty-state" aria-live="polite">
+                <p className="editor-empty-kicker">editor idle</p>
+                <h1>Select a file from the explorer</h1>
+                <p>
+                  Open any portfolio section on the left to restore the workspace.
+                </p>
+              </section>
+            )}
           </main>
         </div>
       </div>
 
       <footer className="statusbar">
-        <span>active file: {activeLink.tab}</span>
-        <span>active section: {activeLink.label}</span>
+        <span>active file: {activeSection ? activeLink.tab : 'none'}</span>
+        <span>active section: {activeSection ? activeLink.label : 'No section open'}</span>
       </footer>
     </div>
   )

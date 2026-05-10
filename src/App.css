@@ -107,11 +107,18 @@
   overflow-x: auto;
 }
 
-.tab {
-  padding: 12px 14px;
+.tab-shell {
+  display: inline-flex;
+  align-items: stretch;
   border: 1px solid transparent;
   border-bottom: 0;
   background: rgba(255, 255, 255, 0.02);
+}
+
+.tab {
+  padding: 12px 10px 12px 14px;
+  border: 0;
+  background: transparent;
   color: var(--muted);
   cursor: pointer;
   font-family: var(--mono);
@@ -120,12 +127,49 @@
   white-space: nowrap;
 }
 
-.tab-active,
-.tab:hover,
-.tab:focus-visible {
+.tab-close {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.92rem;
+}
+
+.tab-shell-active,
+.tab-shell:hover,
+.tab-shell:focus-within {
   border-color: var(--line);
   background: rgba(14, 19, 33, 0.96);
   color: var(--text);
+}
+
+.tab:focus-visible,
+.tab-close:focus-visible {
+  outline: none;
+}
+
+.tab-active,
+.tab:hover,
+.tab:focus-visible,
+.tab-close:hover,
+.tab-close:focus-visible {
+  color: var(--text);
+}
+
+.tabs-empty {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px 10px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .editor-pane {
@@ -135,6 +179,36 @@
   background:
     linear-gradient(180deg, rgba(8, 12, 22, 0.96), rgba(5, 8, 16, 0.98)),
     radial-gradient(circle at top right, rgba(117, 245, 220, 0.05), transparent 28%);
+}
+
+.editor-empty-state {
+  min-height: 100%;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 10px;
+  padding: 42px 0;
+}
+
+.editor-empty-state h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  letter-spacing: 0.03em;
+}
+
+.editor-empty-state p {
+  max-width: 36rem;
+  margin: 0;
+  color: var(--muted);
+}
+
+.editor-empty-kicker {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 @media (max-width: 1180px) {
