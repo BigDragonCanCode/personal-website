@@ -22,18 +22,29 @@ export const contactActions: ContactAction[] = [
   {
     id: 'linkedin',
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/',
+    href: 'https://www.linkedin.com/in/ziqing-wang-99a6802ab/',
     external: true,
   },
   {
     id: 'github',
     label: 'GitHub',
-    href: 'https://github.com/',
+    href: 'https://github.com/BigDragonCanCode',
     external: true,
   },
 ]
 
 export const experienceItems: ExperienceItem[] = [
+  {
+    company: 'BC Centre of Disease Control',
+    role: 'Research Assistant',
+    period: 'May 2026 - Present',
+    points: [
+      'Modernizing project management by building github version control',
+      'Enforcing best practices and clear patterns by setting up branches rulesets and CI checks.',
+      'Deploying application on internal and public servers for clients meetings',
+      'Automating daily data fetch from Google Earth Engine with Python scripts and cron jobs.',
+    ],
+  },
   {
     company: 'IFS Copperleaf',
     role: 'Software Engineer, Design System Co-op',
@@ -59,21 +70,12 @@ export const experienceItems: ExperienceItem[] = [
     role: 'Teaching Assistant, Computer Networking',
     period: 'Jan 2025 - May 2025',
     points: [
-      'Ran tutorials and office hours covering TCP, UDP, IP, routing, and VPN fundamentals.',
-      'Helped students debug systems concepts with clear, practical explanations.',
+      'Ran weekly tutorials and office hours covering concepts like TCP/IP, UDP, routing, and VPN etc.',
     ],
   },
 ]
 
 export const projects: Project[] = [
-  {
-    name: 'CoChat MVP',
-    type: '0 to 1 product build',
-    stack: 'React, TypeScript, CockroachDB, Cloudflare, Vercel',
-    summary:
-      'Built the first product version end to end, shaping the UI, data model, and deployment path with direct user feedback.',
-    impact: 'Strongest signal: product thinking plus execution across the full stack.',
-  },
   {
     name: 'UBC Course Navigator',
     type: 'Data-heavy student tool',

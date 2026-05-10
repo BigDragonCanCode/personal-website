@@ -24,11 +24,11 @@ export function OverviewSection() {
             I build product UI with systems thinking and a bias toward clean,
             reusable engineering.
           </h2>
-          <p className="hero-summary">
+          {/* <p className="hero-summary">
             UBC computer science student based in Vancouver, currently working on
             design systems, frontend-heavy product work, and developer-facing
             interfaces.
-          </p>
+          </p> */}
 
           <div className="hero-actions" role="group" aria-label="Contact actions">
             {contactActions.map((action) => (
@@ -50,15 +50,19 @@ export function OverviewSection() {
         <aside className="hero-side" aria-label="Profile highlights">
           <div className="hero-stat">
             <span className="label">Current role</span>
-            <strong>Design System Co-op at IFS Copperleaf</strong>
+            <strong> Research Assistant </strong>
+            <strong> at BC Centre of Disease Control </strong>
           </div>
           <div className="hero-stat">
             <span className="label">Focus</span>
-            <strong>Frontend systems, product engineering, developer UX</strong>
+            <strong>Modernization</strong>
+            <strong>Machine Learning</strong>
+            <strong>Environmental & Public Health</strong>
           </div>
           <div className="hero-stat">
             <span className="label">Education</span>
-            <strong>UBC Computer Science, GPA 3.86</strong>
+            <strong>UBC Computer Science</strong>
+            <strong>4th year</strong>
           </div>
         </aside>
       </section>

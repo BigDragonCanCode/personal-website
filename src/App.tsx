@@ -67,8 +67,6 @@ function App() {
           <span className="dot green"></span>
         </div>
         <div className="topbar-meta">
-          <span className="topbar-pill">portfolio mode</span>
-          <span className="topbar-pill">dark workspace</span>
         </div>
       </header>
 
@@ -144,8 +142,6 @@ function App() {
       </div>
 
       <footer className="statusbar">
-        <span>active file: {activeSection ? activeLink.tab : 'none'}</span>
-        <span>active section: {activeSection ? activeLink.label : 'No section open'}</span>
       </footer>
     </div>
   )
