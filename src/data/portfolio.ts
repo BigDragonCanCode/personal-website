@@ -1,4 +1,5 @@
 import type {
+  ContactAction,
   ExperienceItem,
   Project,
   SectionLink,
@@ -9,14 +10,33 @@ export const sectionLinks: SectionLink[] = [
   { id: 'projects', label: 'Projects', short: 'PR', file: 'projects.tsx', tab: 'projects.tsx' },
   { id: 'experience', label: 'Experience', short: 'XP', file: 'experience.tsx', tab: 'experience.tsx' },
   { id: 'education', label: 'Education', short: 'ED', file: 'education.tsx', tab: 'education.tsx' },
-  { id: 'contact', label: 'Contact', short: 'CT', file: 'contact.tsx', tab: 'contact.tsx' },
+]
+
+export const contactActions: ContactAction[] = [
+  {
+    id: 'email',
+    label: 'Email',
+    href: 'mailto:winifred.wang.2004@gmail.com',
+  },
+  {
+    id: 'linkedin',
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/',
+    external: true,
+  },
+  {
+    id: 'github',
+    label: 'GitHub',
+    href: 'https://github.com/',
+    external: true,
+  },
 ]
 
 export const experienceItems: ExperienceItem[] = [
   {
     company: 'IFS Copperleaf',
     role: 'Software Engineer, Design System Co-op',
-    period: 'Sep 2025 - Present',
+    period: 'Sep 2025 - May 2026',
     points: [
       'Built reusable Angular and TypeScript components for a production design system.',
       'Refactored legacy flows to improve performance, maintainability, and safer integration patterns.',

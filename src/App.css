@@ -299,7 +299,7 @@
   grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.75fr);
   gap: 44px;
   min-height: calc(100svh - 180px);
-  align-items: end;
+  align-items: center;
 }
 
 .hero-copy {
@@ -318,8 +318,7 @@
 .section-note,
 .intro-columns p,
 .project-body p,
-.timeline-points,
-.contact-links a {
+.timeline-points {
   color: var(--muted);
 }
 
@@ -336,38 +335,39 @@
   margin-top: 34px;
 }
 
-.button-primary,
-.button-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 0 18px;
+.hero-action-button {
+  width: 52px;
+  height: 52px;
+  display: inline-grid;
+  place-items: center;
   border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
   text-decoration: none;
   transition:
     border-color 180ms ease,
     background 180ms ease,
     color 180ms ease,
-    transform 180ms ease;
+    transform 180ms ease,
+    box-shadow 180ms ease;
 }
 
-.button-primary {
-  background: var(--accent);
-  color: #051019;
-  font-weight: 700;
+.hero-action-button svg {
+  width: 26px;
+  height: 26px;
 }
 
-.button-secondary {
-  border-color: var(--line-strong);
-  color: var(--text);
+.hero-action-button:hover,
+.hero-action-button:focus-visible {
+  background: rgba(117, 245, 220, 0.06);
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.26);
 }
 
-.button-primary:hover,
-.button-primary:focus-visible,
-.button-secondary:hover,
-.button-secondary:focus-visible {
-  transform: translateY(-1px);
+.hero-action-button:focus-visible {
+  border-color: rgba(117, 245, 220, 0.4);
 }
 
 .hero-side {
@@ -533,27 +533,6 @@
   align-items: start;
   padding-top: 18px;
   border-top: 1px solid var(--line);
-}
-
-.contact-strip {
-  border-top: 1px solid var(--line);
-}
-
-.contact-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px 28px;
-}
-
-.contact-links a {
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-}
-
-.contact-links a:hover,
-.contact-links a:focus-visible {
-  color: var(--text);
-  border-bottom-color: var(--accent);
 }
 
 @media (max-width: 1180px) {

@@ -1,4 +1,17 @@
-import { strengths } from '../data/portfolio'
+import { FaGithub, FaLinkedinIn } from 'react-icons/fa'
+import { HiOutlineMail } from 'react-icons/hi'
+import { contactActions, strengths } from '../data/portfolio'
+
+function getActionIcon(actionId: 'email' | 'linkedin' | 'github') {
+  switch (actionId) {
+    case 'email':
+      return <HiOutlineMail aria-hidden="true" />
+    case 'linkedin':
+      return <FaLinkedinIn aria-hidden="true" />
+    case 'github':
+      return <FaGithub aria-hidden="true" />
+  }
+}
 
 export function OverviewSection() {
   return (
@@ -6,28 +19,30 @@ export function OverviewSection() {
       <section className="hero section-block" aria-labelledby="hero-title">
         <div className="hero-copy">
           <p className="section-kicker">Software engineer portfolio</p>
-          <h1 id="hero-title">
+          <h2 id="hero-title">
             I build product UI with systems thinking and a bias toward clean,
             reusable engineering.
-          </h1>
+          </h2>
           <p className="hero-summary">
             UBC computer science student based in Vancouver, currently working on
             design systems, frontend-heavy product work, and developer-facing
             interfaces.
           </p>
 
-          <div className="hero-actions">
-            <a className="button-primary" href="mailto:winifred.wang.2004@gmail.com">
-              Email me
-            </a>
-            <a
-              className="button-secondary"
-              href="/src/assets/Ziqing_resume.pdf"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Resume PDF
-            </a>
+          <div className="hero-actions" role="group" aria-label="Contact actions">
+            {contactActions.map((action) => (
+              <a
+                key={action.id}
+                className="hero-action-button"
+                href={action.href}
+                aria-label={action.label}
+                title={action.label}
+                target={action.external ? '_blank' : undefined}
+                rel={action.external ? 'noreferrer' : undefined}
+              >
+                {getActionIcon(action.id)}
+              </a>
+            ))}
           </div>
         </div>
 

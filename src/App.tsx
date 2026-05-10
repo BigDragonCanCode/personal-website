@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { Explorer } from './components/Explorer'
 import { sectionLinks } from './data/portfolio'
-import { ContactSection } from './sections/ContactSection'
 import { EducationSection } from './sections/EducationSection'
 import { ExperienceSection } from './sections/ExperienceSection'
 import { OverviewSection } from './sections/OverviewSection'
@@ -62,7 +61,6 @@ function App() {
             {activeSection === 'projects' && <ProjectsSection />}
             {activeSection === 'experience' && <ExperienceSection />}
             {activeSection === 'education' && <EducationSection />}
-            {activeSection === 'contact' && <ContactSection />}
           </main>
         </div>
       </div>

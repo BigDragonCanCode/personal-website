@@ -3,7 +3,6 @@ export type SectionId =
   | 'projects'
   | 'experience'
   | 'education'
-  | 'contact'
 
 export type SectionLink = {
   id: SectionId
@@ -26,4 +25,13 @@ export type Project = {
   stack: string
   summary: string
   impact: string
+}
+
+export type ContactActionId = 'email' | 'linkedin' | 'github'
+
+export type ContactAction = {
+  id: ContactActionId
+  label: string
+  href: string
+  external?: boolean
 }
