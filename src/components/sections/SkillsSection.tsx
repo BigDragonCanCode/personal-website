@@ -16,6 +16,8 @@ type SphereRotation = {
   y: number
 }
 
+type GlobeInteractionPhase = 'reduced' | 'idle' | 'pressed' | 'dragging' | 'momentum'
+
 type SpherePoint = {
   x: number
   y: number
@@ -25,6 +27,22 @@ type SpherePoint = {
 const initialSphereRotation: SphereRotation = {
   x: -0.34,
   y: 0.78,
+}
+
+const frameDurationMs = 1000 / 60
+const idleSpinVelocity = {
+  x: 0,
+  y: 0.003 / frameDurationMs,
+}
+const dragStartDistancePx = 6
+const releaseVelocityThreshold = 0.0008 / frameDurationMs
+const idleResumeBlend = 0.04
+const momentumDecayPerFrame = 0.92
+const horizontalDragRadiansPerPixel = 0.008
+const verticalDragRadiansPerPixel = 0.0055
+
+function getBlendFactor(deltaMs: number, baseBlend: number) {
+  return 1 - Math.pow(1 - baseBlend, deltaMs / frameDurationMs)
 }
 
 function dedupeSkillIds(skillIds: SkillId[]) {
@@ -190,7 +208,7 @@ export function SkillsSection({
                               </span>
                             ))}
                           </div>
-                        ) : null}
+                        ) : undefined}
                       </li>
                     )
                   })}
@@ -236,7 +254,7 @@ function SkillTileContent({ skill, childSkills }: SkillTileContentProps) {
         <span className="skills-wall__expand-indicator" aria-hidden="true">
           {skill.canonicalName} tools
         </span>
-      ) : null}
+      ) : undefined}
     </>
   )
 }
@@ -266,55 +284,242 @@ type SpherePrototypeGlobeProps = {
 
 function SpherePrototypeGlobe({ skills }: SpherePrototypeGlobeProps) {
   const [rotation, setRotation] = useState<SphereRotation>(initialSphereRotation)
-  const targetRotationRef = useRef<SphereRotation>(initialSphereRotation)
+  const [reducedMotion, setReducedMotion] = useState(false)
+  const rotationRef = useRef<SphereRotation>(initialSphereRotation)
+  const velocityRef = useRef<SphereRotation>(idleSpinVelocity)
+  const settledVerticalRotationRef = useRef(initialSphereRotation.x)
+  const phaseRef = useRef<GlobeInteractionPhase>('idle')
+  const frameIdRef = useRef<number | undefined>(undefined)
+  const lastFrameTimeRef = useRef<number | undefined>(undefined)
+  const activePointerIdRef = useRef<number | undefined>(undefined)
+  const pointerStartRef = useRef<{ x: number; y: number } | undefined>(undefined)
+  const pointerCurrentRef = useRef<{ x: number; y: number } | undefined>(undefined)
+  const lastPointerSampleTimeRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setRotation(initialSphereRotation)
+    if (typeof window === 'undefined') {
       return
     }
 
-    let frameId = 0
-    let currentRotation = initialSphereRotation
-
-    const animate = () => {
-      const targetRotation = targetRotationRef.current
-
-      currentRotation = {
-        x: currentRotation.x + (targetRotation.x - currentRotation.x) * 0.06,
-        y: currentRotation.y + (targetRotation.y - currentRotation.y) * 0.06 + 0.003,
-      }
-
-      setRotation(currentRotation)
-      frameId = window.requestAnimationFrame(animate)
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const syncReducedMotion = () => {
+      setReducedMotion(mediaQuery.matches)
     }
 
-    frameId = window.requestAnimationFrame(animate)
+    syncReducedMotion()
+    mediaQuery.addEventListener('change', syncReducedMotion)
 
-    return () => window.cancelAnimationFrame(frameId)
+    return () => mediaQuery.removeEventListener('change', syncReducedMotion)
   }, [])
 
-  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const bounds = event.currentTarget.getBoundingClientRect()
-    const pointerX = (event.clientX - bounds.left) / bounds.width - 0.5
-    const pointerY = (event.clientY - bounds.top) / bounds.height - 0.5
+  useEffect(() => {
+    let syncFrameId: number | undefined = undefined
 
-    targetRotationRef.current = {
-      x: initialSphereRotation.x + pointerY * 1.1,
-      y: initialSphereRotation.y + pointerX * 1.8,
+    if (reducedMotion) {
+      if (frameIdRef.current !== undefined) {
+        window.cancelAnimationFrame(frameIdRef.current)
+        frameIdRef.current = undefined
+      }
+
+      phaseRef.current = 'reduced'
+      rotationRef.current = initialSphereRotation
+      velocityRef.current = { x: 0, y: 0 }
+      settledVerticalRotationRef.current = initialSphereRotation.x
+      activePointerIdRef.current = undefined
+      pointerStartRef.current = undefined
+      pointerCurrentRef.current = undefined
+      lastPointerSampleTimeRef.current = undefined
+      lastFrameTimeRef.current = undefined
+
+      syncFrameId = window.requestAnimationFrame(() => {
+        setRotation(initialSphereRotation)
+      })
+
+      return () => {
+        if (syncFrameId !== undefined) {
+          window.cancelAnimationFrame(syncFrameId)
+        }
+      }
     }
+
+    phaseRef.current = 'idle'
+    rotationRef.current = initialSphereRotation
+    velocityRef.current = idleSpinVelocity
+    settledVerticalRotationRef.current = initialSphereRotation.x
+    lastFrameTimeRef.current = undefined
+
+    const animate = (timestamp: number) => {
+      const previousFrameTime = lastFrameTimeRef.current ?? timestamp
+      const deltaMs = Math.min(timestamp - previousFrameTime || frameDurationMs, 32)
+      lastFrameTimeRef.current = timestamp
+
+      const currentRotation = rotationRef.current
+      const currentVelocity = velocityRef.current
+      const currentPhase = phaseRef.current
+
+      let nextRotation = currentRotation
+      let nextVelocity = currentVelocity
+
+      if (currentPhase === 'idle') {
+        const blend = getBlendFactor(deltaMs, idleResumeBlend)
+        nextVelocity = {
+          x: currentVelocity.x + (idleSpinVelocity.x - currentVelocity.x) * blend,
+          y: currentVelocity.y + (idleSpinVelocity.y - currentVelocity.y) * blend,
+        }
+        nextRotation = {
+          x:
+            currentRotation.x +
+            (settledVerticalRotationRef.current - currentRotation.x) * blend,
+          y: currentRotation.y + nextVelocity.y * deltaMs,
+        }
+      } else if (currentPhase === 'momentum') {
+        const decay = Math.pow(momentumDecayPerFrame, deltaMs / frameDurationMs)
+        nextVelocity = {
+          x: 0,
+          y: currentVelocity.y * decay,
+        }
+        nextRotation = {
+          x:
+            currentRotation.x +
+            (settledVerticalRotationRef.current - currentRotation.x) *
+              getBlendFactor(deltaMs, idleResumeBlend),
+          y: currentRotation.y + nextVelocity.y * deltaMs,
+        }
+
+        const speed = Math.hypot(nextVelocity.x, nextVelocity.y)
+
+        if (speed < releaseVelocityThreshold) {
+          phaseRef.current = 'idle'
+        }
+      }
+
+      if (nextRotation !== currentRotation || nextVelocity !== currentVelocity) {
+        rotationRef.current = nextRotation
+        velocityRef.current = nextVelocity
+        setRotation(nextRotation)
+      }
+
+      frameIdRef.current = window.requestAnimationFrame(animate)
+    }
+
+    frameIdRef.current = window.requestAnimationFrame(animate)
+
+    return () => {
+      if (syncFrameId !== undefined) {
+        window.cancelAnimationFrame(syncFrameId)
+      }
+
+      if (frameIdRef.current !== undefined) {
+        window.cancelAnimationFrame(frameIdRef.current)
+        frameIdRef.current = undefined
+      }
+    }
+  }, [reducedMotion])
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (reducedMotion) {
+      return
+    }
+
+    event.preventDefault()
+    event.currentTarget.setPointerCapture(event.pointerId)
+    activePointerIdRef.current = event.pointerId
+    pointerStartRef.current = { x: event.clientX, y: event.clientY }
+    pointerCurrentRef.current = { x: event.clientX, y: event.clientY }
+    lastPointerSampleTimeRef.current = event.timeStamp
+    phaseRef.current = 'pressed'
+    velocityRef.current = { x: 0, y: 0 }
   }
 
-  const handlePointerLeave = () => {
-    targetRotationRef.current = initialSphereRotation
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (reducedMotion || event.pointerId !== activePointerIdRef.current) {
+      return
+    }
+
+    event.preventDefault()
+    const startPoint = pointerStartRef.current
+    const previousPoint = pointerCurrentRef.current
+
+    if (!startPoint || !previousPoint) {
+      return
+    }
+
+    const nextPoint = { x: event.clientX, y: event.clientY }
+    const distanceFromStart = Math.hypot(nextPoint.x - startPoint.x, nextPoint.y - startPoint.y)
+    const phase = phaseRef.current
+
+    if (phase === 'pressed' && distanceFromStart < dragStartDistancePx) {
+      pointerCurrentRef.current = nextPoint
+      lastPointerSampleTimeRef.current = event.timeStamp
+      return
+    }
+
+    const deltaX = nextPoint.x - previousPoint.x
+    const deltaY = nextPoint.y - previousPoint.y
+    const deltaMs = Math.max(event.timeStamp - (lastPointerSampleTimeRef.current ?? event.timeStamp), 1)
+    const nextRotation = {
+      x: rotationRef.current.x + deltaY * verticalDragRadiansPerPixel,
+      y: rotationRef.current.y + deltaX * horizontalDragRadiansPerPixel,
+    }
+
+    rotationRef.current = nextRotation
+    settledVerticalRotationRef.current = nextRotation.x
+    velocityRef.current = {
+      x: (deltaY * verticalDragRadiansPerPixel) / deltaMs,
+      y: (deltaX * horizontalDragRadiansPerPixel) / deltaMs,
+    }
+    phaseRef.current = 'dragging'
+    pointerCurrentRef.current = nextPoint
+    lastPointerSampleTimeRef.current = event.timeStamp
+    setRotation(nextRotation)
+  }
+
+  const endPointerInteraction = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerId !== activePointerIdRef.current) {
+      return
+    }
+
+    event.preventDefault()
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+
+    const wasDragging = phaseRef.current === 'dragging'
+    const releaseSpeed = Math.abs(velocityRef.current.y)
+
+    settledVerticalRotationRef.current = rotationRef.current.x
+    activePointerIdRef.current = undefined
+    pointerStartRef.current = undefined
+    pointerCurrentRef.current = undefined
+    lastPointerSampleTimeRef.current = undefined
+
+    if (wasDragging && releaseSpeed >= releaseVelocityThreshold) {
+      velocityRef.current = { x: 0, y: velocityRef.current.y }
+      phaseRef.current = 'momentum'
+      return
+    }
+
+    phaseRef.current = 'idle'
+    velocityRef.current = { x: 0, y: idleSpinVelocity.y }
+  }
+
+  const handlePointerLeave = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (
+      event.pointerId === activePointerIdRef.current &&
+      !event.currentTarget.hasPointerCapture(event.pointerId)
+    ) {
+      endPointerInteraction(event)
+    }
   }
 
   return (
     <div
       className="skills-globe-sphere"
+      onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
+      onPointerUp={endPointerInteraction}
       onPointerLeave={handlePointerLeave}
-      onPointerCancel={handlePointerLeave}
+      onPointerCancel={endPointerInteraction}
       aria-hidden="true"
     >
       <div className="skills-globe-sphere__wireframe">
