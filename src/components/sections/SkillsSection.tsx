@@ -45,23 +45,19 @@ function getBlendFactor(deltaMs: number, baseBlend: number) {
   return 1 - Math.pow(1 - baseBlend, deltaMs / frameDurationMs)
 }
 
-function dedupeSkillIds(skillIds: SkillId[]) {
-  return [...new Set(skillIds)]
-}
-
 function createInitialState(
   defaultMode: SkillsSectionMode,
-  initialExpandedSkillIds: SkillId[],
+  _initialExpandedSkillIds: SkillId[],
 ): SkillsSectionState {
   return {
     mode: defaultMode,
-    expandedSkillIds: dedupeSkillIds(initialExpandedSkillIds),
+    expandedSkillIds: [],
   }
 }
 
 export function SkillsSection({
   data = skillsSectionData,
-  defaultMode = 'wall',
+  defaultMode = 'globe',
   initialExpandedSkillIds = [],
   children,
 }: SkillsSectionProps) {
@@ -119,7 +115,7 @@ export function SkillsSection({
         <div className="skills-section__controls">
 
           <div className="skills-section__toggle" role="tablist" aria-label="Skills view">
-            {(['wall', 'globe'] as const).map((mode) => (
+            {(['globe', 'wall'] as const).map((mode) => (
               <button
                 key={mode}
                 type="button"
@@ -188,11 +184,10 @@ export function SkillsSection({
                           </div>
                         )}
 
-                        {isExpandable ? (
+                        {isExpandable && isExpanded ? (
                           <div
                             id={`${sectionId}-${skill.id}-children`}
                             className="skills-wall__children"
-                            hidden={!isExpanded}
                           >
                             {childSkills.map((childSkill) => (
                               <span
@@ -208,7 +203,7 @@ export function SkillsSection({
                               </span>
                             ))}
                           </div>
-                        ) : undefined}
+                        ) : null}
                       </li>
                     )
                   })}
@@ -231,6 +226,7 @@ type SkillTileContentProps = {
 
 function SkillTileContent({ skill, childSkills }: SkillTileContentProps) {
   const Icon = skill.icon
+  const hasChildSkills = childSkills.length > 0
 
   return (
     <>
@@ -239,18 +235,8 @@ function SkillTileContent({ skill, childSkills }: SkillTileContentProps) {
       </div>
       <div className="skills-wall__tile-copy">
         <span className="skills-wall__tile-label">{skill.canonicalName}</span>
-        {childSkills.length > 0 ? (
-          <span className="skills-wall__tile-meta">
-            <span className="skills-wall__tile-count">{childSkills.length}</span>
-            <span>{childSkills.length === 1 ? 'linked tool' : 'linked tools'}</span>
-          </span>
-        ) : (
-          <span className="skills-wall__tile-meta skills-wall__tile-meta--quiet">
-            {skill.category === 'developer-tools' ? 'workflow tool' : 'core skill'}
-          </span>
-        )}
       </div>
-      {childSkills.length > 0 ? (
+      {hasChildSkills ? (
         <span className="skills-wall__expand-indicator" aria-hidden="true">
           {skill.canonicalName} tools
         </span>
