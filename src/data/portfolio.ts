@@ -35,7 +35,7 @@ export const contactActions: ContactAction[] = [
 
 export const experienceItems: ExperienceItem[] = [
   {
-    company: 'BC Centre of Disease Control',
+    company: 'BC Centre for Disease Control',
     role: 'Research Assistant',
     period: 'May 2026 - Present',
     points: [
@@ -77,20 +77,55 @@ export const experienceItems: ExperienceItem[] = [
 
 export const projects: Project[] = [
   {
+    name: 'agent-forge',
+    type: 'AI workflow tooling',
+    stack: 'Markdown, Agent skills, Agent workflows',
+    summary: [
+      'Built a reusable workflow for composing custom agent skills.',
+      '`spec` skill turns rough ideas into staged Markdown plans with clear subagents to assign to.',
+      '`implement` skill executes stage in the plan, updates checklists, and logs decisions to reduce black-box coding.',
+    ],
+    href: 'https://github.com/BigDragonCanCode/agent-forge',
+  },
+  {
+    name: 'Diamond Cut Grades Machine Learning Project',
+    type: 'Classification and data analysis',
+    stack: 'R, Git, Tidyverse',
+    summary: [
+      'Tidied the dataset and selected predictors with box plots to balance accuracy and training time.',
+      'Trained and compared two KNN classification models, reaching 72% accuracy on diamond cut grade prediction.',
+      'Used GitHub for collaboration and co-authored a 1600-word report with plots.',
+    ],
+    href: 'https://github.com/rubydelang/sonar_data',
+  },
+  {
     name: 'UBC Course Navigator',
-    type: 'Data-heavy student tool',
+    type: 'Full-stack student tool',
     stack: 'TypeScript, React, Chart.js, Mocha, Chai',
-    summary:
-      'Implemented query, validation, and visualization flows around a structured course dataset with an emphasis on clarity and correctness.',
-    impact: 'Strongest signal: frontend organization around dense data and interaction logic.',
+    summary: [
+      'Built a full-stack tool for querying UBC course data across multiple views.',
+      'Lets students compare past averages by section, professor ratings, and other course details.',
+    ],
   },
   {
     name: 'Concert Ticket Management Service',
     type: 'Database-backed service',
-    stack: 'JavaScript, SQL, Oracle, Node.js',
-    summary:
+    stack: 'JavaScript, SQL, Oracle, Node.js, HTML',
+    summary: [
       'Designed a concert and ticket management system with guided querying and reliable data operations.',
-    impact: 'Strongest signal: relational modeling, backend workflows, and query design.',
+      'Modeled 8 databases and normalized them with 3NF for efficient storage.',
+    ],
+  },
+  {
+    name: 'Tic Tac Toe',
+    type: 'Networked desktop game',
+    stack: 'Python, pyFLTK, Socket',
+    summary: [
+      'Designed the class structure with a UML diagram to keep inheritance and interactions clear.',
+      'Built a 3x3 pyFLTK game with socket-based real-time play for two players.',
+      'Used TDD with black-box and white-box testing to improve reliability.',
+    ],
+    href: 'https://github.com/BigDragonCanCode/TicTacToe',
   },
 ]
 

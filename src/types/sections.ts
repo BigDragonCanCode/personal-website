@@ -24,8 +24,8 @@ export type Project = {
   name: string
   type: string
   stack: string
-  summary: string
-  impact: string
+  summary: string[]
+  href?: string
 }
 
 export type ContactActionId = 'email' | 'linkedin' | 'github'

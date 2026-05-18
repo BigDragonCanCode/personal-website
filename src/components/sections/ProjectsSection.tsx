@@ -4,25 +4,34 @@ import './ProjectsSection.css'
 export function ProjectsSection() {
   return (
     <section className="section-block" aria-labelledby="projects-title">
-      <div className="section-heading section-heading--split">
-        <div>
-          <p className="section-kicker">Selected work</p>
-          {/* <h2 id="projects-title">Case-study style project rows.</h2> */}
-        </div>
-      </div>
-
       <div className="project-list">
         {projects.map((project) => (
           <article key={project.name} className="project-row">
             <div className="project-meta">
               <p className="project-type">{project.type}</p>
-              <h3>{project.name}</h3>
+              <h3>
+                {project.href ? (
+                  <a
+                    className="project-title-link"
+                    href={project.href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {project.name}
+                  </a>
+                ) : (
+                  project.name
+                )}
+              </h3>
             </div>
             <div className="project-body">
-              <p>{project.summary}</p>
+              <ul className="project-summary">
+                {project.summary.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
               <p className="project-stack">{project.stack}</p>
             </div>
-            <p className="project-impact">{project.impact}</p>
           </article>
         ))}
       </div>

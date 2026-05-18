@@ -5,6 +5,7 @@ import {
   SiChai,
   SiChartdotjs,
   SiCloudflare,
+  SiClaude,
   SiCockroachlabs,
   SiCplusplus,
   SiC,
@@ -13,15 +14,18 @@ import {
   SiEclipseide,
   SiExpress,
   SiGit,
+  SiGnubash,
   SiHtml5,
   SiIntellijidea,
   SiJavascript,
   SiJira,
   SiJupyter,
   SiJunit5,
+  SiLinux,
   SiMocha,
   SiMongodb,
   SiMysql,
+  SiOpenai,
   SiOpengl,
   SiPython,
   SiR,
@@ -97,6 +101,8 @@ export const resumeTechnicalSkillsSource: ResumeSkillSource = {
   ],
   'developer-tools': [
     'Git',
+    'Linux',
+    'Shell',
     'Visual Studio Code',
     'IntelliJ',
     'Eclipse',
@@ -105,7 +111,7 @@ export const resumeTechnicalSkillsSource: ResumeSkillSource = {
     'CockroachDB',
     'Oracle',
     'MySQL',
-    'Agile',
+    'Agile Methodology',
     'Jira',
     'JUnit',
     'GDB',
@@ -114,6 +120,8 @@ export const resumeTechnicalSkillsSource: ResumeSkillSource = {
     'Railway',
     'Vercel',
     'Cursor',
+    'Codex',
+    'Claude Code',
     'Bolt',
     'Azure Devops',
   ],
@@ -355,6 +363,24 @@ export const resumeSkills: ResumeSkill[] = [
     iconMatch: 'exact',
   },
   {
+    id: 'linux',
+    sourceLabel: 'Linux',
+    canonicalName: 'Linux',
+    category: 'developer-tools',
+    icon: SiLinux,
+    iconStatus: 'ready',
+    iconMatch: 'exact',
+  },
+  {
+    id: 'shell',
+    sourceLabel: 'Shell',
+    canonicalName: 'Shell',
+    category: 'developer-tools',
+    icon: SiGnubash,
+    iconStatus: 'ready',
+    iconMatch: 'proxy',
+  },
+  {
     id: 'visual-studio-code',
     sourceLabel: 'Visual Studio Code',
     canonicalName: 'Visual Studio Code',
@@ -428,12 +454,12 @@ export const resumeSkills: ResumeSkill[] = [
   },
   {
     id: 'agile',
-    sourceLabel: 'Agile',
-    canonicalName: 'Agile',
+    sourceLabel: 'Agile Methodology',
+    canonicalName: 'Agile Methodology',
     category: 'developer-tools',
-    icon: null,
-    iconStatus: 'missing',
-    iconMatch: 'missing',
+    icon: SiJira,
+    iconStatus: 'ready',
+    iconMatch: 'proxy',
   },
   {
     id: 'jira',
@@ -517,6 +543,24 @@ export const resumeSkills: ResumeSkill[] = [
     iconMatch: 'missing',
   },
   {
+    id: 'codex',
+    sourceLabel: 'Codex',
+    canonicalName: 'Codex',
+    category: 'developer-tools',
+    icon: SiOpenai,
+    iconStatus: 'ready',
+    iconMatch: 'proxy',
+  },
+  {
+    id: 'claude-code',
+    sourceLabel: 'Claude Code',
+    canonicalName: 'Claude Code',
+    category: 'developer-tools',
+    icon: SiClaude,
+    iconStatus: 'ready',
+    iconMatch: 'proxy',
+  },
+  {
     id: 'bolt',
     sourceLabel: 'Bolt',
     canonicalName: 'Bolt',
@@ -549,9 +593,11 @@ export const iconReadySkills = resumeSkills.filter(
   (skill): skill is IconReadySkill => skill.iconStatus === 'ready',
 )
 
-export const globeSkills = iconReadySkills.filter((skill) => !skill.wallOnly)
+export const globeSkills = resumeSkills.filter((skill) => !skill.wallOnly)
 
-export const topLevelIconReadySkills = globeSkills
+export const topLevelIconReadySkills = globeSkills.filter(
+  (skill): skill is IconReadySkill => skill.iconStatus === 'ready',
+)
 
 export const missingIconSkills = resumeSkills.filter(
   (skill): skill is MissingIconSkill => skill.iconStatus === 'missing',

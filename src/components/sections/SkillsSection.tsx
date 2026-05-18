@@ -4,6 +4,7 @@ import './SkillsSection.css'
 import { skillCategories, skillsSectionData } from '../../data/skills'
 import type {
   IconReadySkill,
+  ResumeSkill,
   SkillId,
   SkillsSectionMode,
   SkillsSectionProps,
@@ -89,15 +90,12 @@ export function SkillsSection({
     return children({ data, state, setMode, toggleExpandedSkill })
   }
 
-  const topLevelIconReadySkills = data.wallTopLevelSkills.filter(
-    (skill): skill is IconReadySkill => skill.iconStatus === 'ready',
-  )
   const globeSkills = data.globeSkills.filter((skill) => !skill.parentSkillId)
 
   const wallCategories = skillCategories
     .map((category) => ({
       category,
-      skills: topLevelIconReadySkills.filter((skill) => skill.category === category.id),
+      skills: data.wallTopLevelSkills.filter((skill) => skill.category === category.id),
     }))
     .filter(({ skills }) => skills.length > 0)
 
@@ -220,18 +218,17 @@ export function SkillsSection({
 }
 
 type SkillTileContentProps = {
-  skill: IconReadySkill
+  skill: ResumeSkill
   childSkills: WallChildSkill[]
 }
 
 function SkillTileContent({ skill, childSkills }: SkillTileContentProps) {
-  const Icon = skill.icon
   const hasChildSkills = childSkills.length > 0
 
   return (
     <>
       <div className="skills-wall__icon-frame" aria-hidden="true">
-        <Icon className="skills-wall__icon" />
+        {skill.iconStatus === 'ready' ? <skill.icon className="skills-wall__icon" /> : null}
       </div>
       <div className="skills-wall__tile-copy">
         <span className="skills-wall__tile-label">{skill.canonicalName}</span>
@@ -247,7 +244,7 @@ function SkillTileContent({ skill, childSkills }: SkillTileContentProps) {
 
 type SkillsGlobeProps = {
   sectionId: string
-  skills: IconReadySkill[]
+  skills: ResumeSkill[]
 }
 
 function SkillsGlobe({ sectionId, skills }: SkillsGlobeProps) {
@@ -514,7 +511,6 @@ function SpherePrototypeGlobe({ skills }: SpherePrototypeGlobeProps) {
         <span className="skills-globe-sphere__ring skills-globe-sphere__ring--tilt" />
 
         {skills.map((skill, index) => {
-          const Icon = skill.icon
           const point = projectSpherePoint(createSpherePoint(index, skills.length), rotation)
           const depth = (point.z + 1) / 2
           const isBackNode = point.z < 0.02
@@ -526,7 +522,9 @@ function SpherePrototypeGlobe({ skills }: SpherePrototypeGlobeProps) {
               style={createSphereNodeStyle(point, depth)}
             >
               <span className="skills-globe-sphere__node-core">
-                <Icon className="skills-globe-sphere__node-icon" />
+                {skill.iconStatus === 'ready' ? (
+                  <skill.icon className="skills-globe-sphere__node-icon" />
+                ) : null}
               </span>
               <span className="skills-globe-sphere__node-label">{skill.canonicalName}</span>
             </span>

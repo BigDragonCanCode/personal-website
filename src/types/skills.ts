@@ -76,7 +76,7 @@ export type SkillsSectionData = {
   allSkills: ResumeSkill[]
   iconReadySkills: IconReadySkill[]
   missingIconSkills: MissingIconSkill[]
-  globeSkills: IconReadySkill[]
+  globeSkills: ResumeSkill[]
   wallTopLevelSkills: ResumeSkill[]
   wallChildSkillsByParentId: WallChildSkillsByParentId
   expandableWallParentSkills: ExpandableWallParentSkill[]
